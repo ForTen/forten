@@ -1,0 +1,2 @@
+module Front::LoginHelper
+end

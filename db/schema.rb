@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150415100630) do
+ActiveRecord::Schema.define(version: 20150416095412) do
+
+  create_table "api_keys", force: true do |t|
+    t.string   "access_token"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id", using: :btree
 
   create_table "comments", force: true do |t|
     t.string   "body"
@@ -21,8 +30,8 @@ ActiveRecord::Schema.define(version: 20150415100630) do
     t.datetime "updated_at"
   end
 
-  add_index "comments", ["post_id"], name: "index_comments_on_post_id"
-  add_index "comments", ["user_id"], name: "index_comments_on_user_id"
+  add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "likes", force: true do |t|
     t.integer  "user_id"
@@ -32,9 +41,9 @@ ActiveRecord::Schema.define(version: 20150415100630) do
     t.datetime "updated_at"
   end
 
-  add_index "likes", ["comment_id"], name: "index_likes_on_comment_id"
-  add_index "likes", ["post_id"], name: "index_likes_on_post_id"
-  add_index "likes", ["user_id"], name: "index_likes_on_user_id"
+  add_index "likes", ["comment_id"], name: "index_likes_on_comment_id", using: :btree
+  add_index "likes", ["post_id"], name: "index_likes_on_post_id", using: :btree
+  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
 
   create_table "posts", force: true do |t|
     t.string   "body"
@@ -43,7 +52,7 @@ ActiveRecord::Schema.define(version: 20150415100630) do
     t.datetime "updated_at"
   end
 
-  add_index "posts", ["user_id"], name: "index_posts_on_user_id"
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "username"
