@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  validates :body, :user, presence: true
+  validates :body, :user_id, presence: true
 
   belongs_to :user
   has_many :comments, dependent: :destroy
@@ -7,6 +7,7 @@ class Post < ActiveRecord::Base
 
   def self.check_byte(str)
     # return string byte without blank
-    str.delete(' ').bytesize
+    body_bytes = str.delete(' ').bytesize
+    body_bytes <= 30 ? true : false
   end
 end

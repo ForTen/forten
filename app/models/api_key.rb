@@ -1,10 +1,9 @@
 class ApiKey < ActiveRecord::Base
-  belongs_to :user
-
   validates_uniqueness_of :user
   validates_uniqueness_of :access_token
 
-  private
+  validates :access_token, :user_id, presence: true
+  belongs_to :user
 
   def self.generate_access_token(user_id)
     Time.now.to_i.to_s + user_id.to_s
