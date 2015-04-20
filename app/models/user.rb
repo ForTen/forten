@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   validates :username, :email, :password, presence: true
   validates :username, length: { maximum: 20 }
+  validates_uniqueness_of :email
 
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy

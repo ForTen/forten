@@ -56,10 +56,8 @@ RSpec.describe Comment, type: :model do
 
   context '#destroy' do
     it 'likes should destroy with comment' do
-      user = FactoryGirl.create(:wonjae)
-      post = FactoryGirl.create(:sad_post, user_id: user.id)
-      comment = FactoryGirl.create(:sad_comment, user_id: user.id, post_id: post.id)
-      like = FactoryGirl.create(:one_like_one_love, user_id: user.id, post_id: post.id, comment_id: comment.id)
+      comment = FactoryGirl.create(:sad_comment, user_id: @user.id, post_id: @post.id)
+      like = FactoryGirl.create(:one_like_one_love, user_id: @user.id, post_id: @post.id, comment_id: comment.id)
 
       comment.destroy
 

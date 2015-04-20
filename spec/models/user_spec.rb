@@ -9,37 +9,37 @@ RSpec.describe User, type: :model do
   context '#create' do
     context 'success' do
       it 'username is presence' do
-        expect(FactoryGirl.build(:wonjae, username: 'akkiros')).to be_valid
+        expect(FactoryGirl.build(:minsoo, username: 'minsoo1003')).to be_valid
       end
 
       it 'username is maximum 20 words' do
-        expect(FactoryGirl.build(:wonjae, username: 'akkiros')).to be_valid
+        expect(FactoryGirl.build(:minsoo, username: 'minsoo1003')).to be_valid
       end
 
       it 'email is presence' do
-        expect(FactoryGirl.build(:wonjae, email: 'test@test.com')).to be_valid
+        expect(FactoryGirl.build(:minsoo, email: 'test2@test.com')).to be_valid
       end
 
       it 'password is presence' do
-        expect(FactoryGirl.build(:wonjae, password: 'aaaaaa')).to be_valid
+        expect(FactoryGirl.build(:minsoo, password: 'aaaaaa')).to be_valid
       end
     end
 
     context 'fail' do
       it 'username is presence' do
-        expect(FactoryGirl.build(:wonjae, username: '')).not_to be_valid
+        expect(FactoryGirl.build(:minsoo, username: '')).not_to be_valid
       end
 
       it 'username is maximum 20 words' do
-        expect(FactoryGirl.build(:wonjae, username: 'asdfasdfasdfasdfasdfa')).not_to be_valid
+        expect(FactoryGirl.build(:minsoo, username: 'asdfasdfasdfasdfasdfa')).not_to be_valid
       end
 
       it 'email is presence' do
-        expect(FactoryGirl.build(:wonjae, email: '')).not_to be_valid
+        expect(FactoryGirl.build(:minsoo, email: '')).not_to be_valid
       end
 
       it 'password is presence' do
-        expect(FactoryGirl.build(:wonjae, password: '')).not_to be_valid
+        expect(FactoryGirl.build(:minsoo, password: '')).not_to be_valid
       end
     end
   end
@@ -73,6 +73,10 @@ RSpec.describe User, type: :model do
   end
 
   context '#destroy' do
+    before(:each) do
+      @user.destroy
+    end
+
     it 'posts should destroy with user' do
       user = FactoryGirl.create(:wonjae)
       post = FactoryGirl.create(:sad_post, user_id: user.id)
