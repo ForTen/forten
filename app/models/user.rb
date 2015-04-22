@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   has_many :likes, dependent: :destroy
   has_one :api_key, dependent: :destroy
 
+  scope :by_access_token, -> (at) { joins(:api_key).where("api_keys.access_token = #{at}") }
+
   def self.encrypt_password(password)
     Digest::SHA1.hexdigest(password)
   end

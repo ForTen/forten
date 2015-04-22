@@ -125,4 +125,88 @@ RSpec.describe ApiController, type: :controller do
       end
     end
   end
+
+  context '#create_post' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+
+      @short_body = "테스트 작성중"
+      @long_body = "테스트 작성중 하하하하 30바이트 넘었다"
+    end
+
+    it 'body less than 30 bytes' do
+      post :create_post, { access_token: @at, post: { body: @short_body } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+
+    it 'body more than 30 bytes' do
+      post :create_post, { access_token: @at, post: { body: @long_body } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'without access_token' do
+      post :create_post, { post: { body: @short_body } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with invalid access_token' do
+      post :create_post, { access_token: @at + @at, post: { body: @short_body } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'without post body' do
+      post :create_post, { access_token: @at }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+  end
+
+  context '#get_post' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+    end
+
+    it 'without access_token' do
+      post :get_post, { post: { id: @post.id } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with invalid access_token' do
+      post :get_post, { access_token: @at + @at, post: { id: @post.id } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with all params' do
+      post :get_post, { access_token: @at, post: { id: @post.id } }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+  end
 end

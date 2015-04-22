@@ -41,6 +41,10 @@ RSpec.describe User, type: :model do
       it 'password is presence' do
         expect(FactoryGirl.build(:minsoo, password: '')).not_to be_valid
       end
+      
+      it 'email is unique' do
+        expect(FactoryGirl.build(:wonjae)).not_to be_valid
+      end
     end
   end
 
