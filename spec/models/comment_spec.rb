@@ -37,7 +37,7 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  context '.assocation' do
+  context '.association' do
     it 'should belong_to user' do
       t = Comment.reflect_on_association(:user)
       expect(t.macro).to eq(:belongs_to)

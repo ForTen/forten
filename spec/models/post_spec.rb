@@ -29,7 +29,7 @@ RSpec.describe Post, type: :model do
     end
   end
 
-  context '.assocation' do
+  context '.association' do
     it 'should belong_to user' do
       t = Post.reflect_on_association(:user)
       expect(t.macro).to eq(:belongs_to)

@@ -7,7 +7,7 @@ RSpec.describe ApiController, type: :controller do
     @username = 'akkiros'
   end
   
-  context '#regist' do
+  describe '#regist' do
     context 'fail' do
       it 'email is nil' do
         post :regist, { password: @password, password_repeat: @password, username: @username }
@@ -65,7 +65,7 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
-  context '#login' do
+  describe '#login' do
     context 'fail' do
       it 'email is nil' do
         password = '1234qwer'
@@ -126,7 +126,7 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
-  context '#create_post' do
+  describe '#create_post' do
     before(:each) do
       @user = FactoryGirl.create(:wonjae)
       @at = ApiKey.generate_access_token(@user.id)
@@ -177,7 +177,7 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
-  context '#get_post' do
+  describe '#get_post' do
     before(:each) do
       @user = FactoryGirl.create(:wonjae)
       @at = ApiKey.generate_access_token(@user.id)
@@ -203,6 +203,78 @@ RSpec.describe ApiController, type: :controller do
 
     it 'with all params' do
       post :get_post, { access_token: @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+  end
+
+  describe '#destroy_post' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @user2 = FactoryGirl.create(:minsoo)
+
+      @at = ApiKey.generate_access_token(@user.id)
+      @at2 = ApiKey.generate_access_token(@user2.id)
+
+      @user.create_api_key(access_token: @at)
+      @user2.create_api_key(access_token: @at2)
+
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+      @post2 = @user2.posts.create(body: '테스트당 헤헤') 
+    end
+
+    it 'not owner' do
+      post :destroy_post, { access_token: @at, id: @post2.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'owner' do
+      post :destroy_post, { access_token: @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+  end
+
+  describe '#timeline' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+
+      (1..20).each do |i|
+        instance_variable_set("@post#{i}", @user.posts.create(body: "테스트 #{i}"))
+      end
+    end
+
+    it 'get correct posts' do
+      post :timeline, { access_token: @at }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+  end
+
+  describe '#read_more' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+
+      (1..20).each do |i|
+        instance_variable_set("@post#{i}", @user.posts.create(body: "테스트 #{i}"))
+      end
+    end
+
+    it 'get correct posts' do
+      post :read_more, { access_token: @at }
 
       body = JSON.parse(response.body)
 

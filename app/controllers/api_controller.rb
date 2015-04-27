@@ -1,11 +1,9 @@
 class ApiController < ApplicationController
 
+  before_action :check_access_token, except: [:regist, :login]
   skip_before_filter :verify_authenticity_token
 
-  def initialize
-    @result = { server_time: Time.now.to_i, }
-  end
-
+  
   def regist
     email = params[:email] unless params[:email].nil?
     password = Digest::SHA1.hexdigest(params[:password]) unless params[:password].nil?
@@ -58,14 +56,9 @@ class ApiController < ApplicationController
   #                          post                        #
   ########################################################
   def get_post
-    at = params[:access_token]
     post_id = params[:id]
 
-    return error('인자가 올바르지 않습니다.') if at.nil? || post_id.nil?
-
-    @user = User.by_access_token(at).first
-
-    return error('사용자의 정보가 없습니다.') if @user.nil?
+    return error('인자가 올바르지 않습니다.') if post_id.nil?
 
     @post = @user.posts.find_by_id(post_id)
 
@@ -74,16 +67,9 @@ class ApiController < ApplicationController
   end
 
   def create_post
-    at = params[:access_token]
     body = params[:body]
     
-    return error('인자가 올바르지 않습니다.') if at.nil? || body.nil?
-
-    @user = User.by_access_token(at).first
-    # TODO: 왜 scope에서 first 한건 안먹힐까
-
-    return error('사용자의 정보가 없습니다.') if @user.nil?
-
+    return error('인자가 올바르지 않습니다.') if body.nil?
     return error('글자수가 초과 되었습니다.') unless Post.check_byte(body)
 
     @post = @user.posts.create(body: body)
@@ -92,29 +78,43 @@ class ApiController < ApplicationController
     success
   end
 
-  private
+  def destroy_post
+    post = Post.find_by_id(params[:id])
+    post_owner = post.user_id
 
-  def append_user_data
-    @result.merge!(user: { id: @user.id, username: @user.username, })
+    return error('게시물의 소유주가 아닙니다.') unless post_owner == @user.id
+
+    post.destroy
+
+    success
   end
 
-  def append_post_data
-    @result.merge!(post: { id: @post.id, body: @post.body, })
+  def timeline
+    posts = Post.all.reverse_order.limit(@timeline_limit)
+    post_list = []
+
+    posts.each do |p|
+      post_list.push({ id: p.id, body: p.body })
+    end
+
+    @result.merge!(posts: post_list)
+
+    success
   end
 
-  def error(message)
-    @result = {
-      success: false,
-      error: {
-        message: message,
-      }
-    }
+  def read_more
+    @timeline_limit += 10
 
-    render json: @result
+    posts = Post.all.reverse_order.offset(@timeline_limit - 10).limit(@timeline_limit)
+    
+    post_list = []
+
+    posts.each do |p|
+      post_list.push({ id: p.id, body: p.body })
+    end
+
+    @result.merge!(posts: post_list)
+
+    success
   end
-
-  def success
-    render json: @result.merge!(success: true)
-  end
-
 end

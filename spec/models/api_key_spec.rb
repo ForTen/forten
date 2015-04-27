@@ -42,7 +42,7 @@ RSpec.describe ApiKey, type: :model do
   end
 =end
 
-  context '.assocation' do
+  context '.association' do
     it 'should belongs_to user' do
       t = ApiKey.reflect_on_association(:user)
       expect(t.macro).to eq(:belongs_to)
