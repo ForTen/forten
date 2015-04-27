@@ -59,7 +59,7 @@ class ApiController < ApplicationController
   ########################################################
   def get_post
     at = params[:access_token]
-    post_id = params[:post][:id] if params[:post]
+    post_id = params[:id]
 
     return error('인자가 올바르지 않습니다.') if at.nil? || post_id.nil?
 
@@ -75,7 +75,7 @@ class ApiController < ApplicationController
 
   def create_post
     at = params[:access_token]
-    body = params[:post][:body] if params[:post]
+    body = params[:body]
     
     return error('인자가 올바르지 않습니다.') if at.nil? || body.nil?
 

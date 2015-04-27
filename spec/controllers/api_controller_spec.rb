@@ -137,7 +137,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'body less than 30 bytes' do
-      post :create_post, { access_token: @at, post: { body: @short_body } }
+      post :create_post, { access_token: @at, body: @short_body }
 
       body = JSON.parse(response.body)
 
@@ -145,7 +145,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'body more than 30 bytes' do
-      post :create_post, { access_token: @at, post: { body: @long_body } }
+      post :create_post, { access_token: @at, body: @long_body }
 
       body = JSON.parse(response.body)
 
@@ -153,7 +153,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'without access_token' do
-      post :create_post, { post: { body: @short_body } }
+      post :create_post, { body: @short_body }
 
       body = JSON.parse(response.body)
 
@@ -161,7 +161,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'with invalid access_token' do
-      post :create_post, { access_token: @at + @at, post: { body: @short_body } }
+      post :create_post, { access_token: @at + @at, body: @short_body }
 
       body = JSON.parse(response.body)
 
@@ -186,7 +186,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'without access_token' do
-      post :get_post, { post: { id: @post.id } }
+      post :get_post, { id: @post.id }
 
       body = JSON.parse(response.body)
 
@@ -194,7 +194,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'with invalid access_token' do
-      post :get_post, { access_token: @at + @at, post: { id: @post.id } }
+      post :get_post, { access_token: @at + @at, id: @post.id }
 
       body = JSON.parse(response.body)
 
@@ -202,7 +202,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'with all params' do
-      post :get_post, { access_token: @at, post: { id: @post.id } }
+      post :get_post, { access_token: @at, id: @post.id }
 
       body = JSON.parse(response.body)
 
