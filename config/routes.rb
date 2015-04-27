@@ -3,6 +3,6 @@ Rails.application.routes.draw do
   post 'api/regist' => 'api#regist'
   post 'api/login' => 'api#login'
 
-  get 'api/posts' => 'api#get_post'
+  get 'api/posts/:id' => 'api#get_post'
   post 'api/posts' => 'api#create_post'
 end
