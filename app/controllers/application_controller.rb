@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
     @result.merge!(post: { id: @post.id, body: @post.body, })
   end
 
+  def append_comments_data(comment_list)
+    @result.merge!(comments: comment_list )
+  end
+
   def error(message)
     @result = {
       success: false,

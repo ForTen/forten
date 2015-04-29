@@ -186,7 +186,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'without access_token' do
-      post :get_post, { id: @post.id }
+      get :get_post, { id: @post.id }
 
       body = JSON.parse(response.body)
 
@@ -194,7 +194,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'with invalid access_token' do
-      post :get_post, { access_token: @at + @at, id: @post.id }
+      get :get_post, { access_token: @at + @at, id: @post.id }
 
       body = JSON.parse(response.body)
 
@@ -202,7 +202,7 @@ RSpec.describe ApiController, type: :controller do
     end
 
     it 'with all params' do
-      post :get_post, { access_token: @at, id: @post.id }
+      get :get_post, { access_token: @at, id: @post.id }
 
       body = JSON.parse(response.body)
 
@@ -242,6 +242,98 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
+  describe '#get_comments' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+      (1..10).each do |i|
+        @post.comments.create(body: "테스트#{i}", user_id: @user.id)
+      end
+    end
+
+    it 'without access_token' do
+      get :get_comments, { id: @post.id }
+
+      body = JSON.parse(response.body)
+      puts body
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with invalid access_token' do
+      get :get_comments, { access_token: @at + @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+      puts body
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with all params' do
+      get :get_comments, { access_token: @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+      puts body
+
+      expect(body['success']).to eq(true)
+    end
+  end
+
+  describe '#create_comment' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+
+      @short_body = "테스트 작성중"
+      @long_body = "테스트 작성중 하하하하 30바이트 넘었다"
+    end
+
+    it 'body less than 30 bytes' do
+      post :create_comment, { access_token: @at, id: @post.id, body: @short_body }
+
+      body = JSON.parse(response.body)
+      puts body
+
+      expect(body['success']).to eq(true)
+    end
+
+    it 'body more than 30 bytes' do
+      post :create_comment, { access_token: @at, id: @post.id, body: @long_body }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'without access_token' do
+      post :create_comment, { id: @post.id, body: @short_body }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with invalid access_token' do
+      post :create_comment, { access_token: @at + @at, id: @post.id, body: @short_body }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'without comment body' do
+      post :create_comment, { access_token: @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+  end
+
   describe '#timeline' do
     before(:each) do
       @user = FactoryGirl.create(:wonjae)
@@ -249,7 +341,7 @@ RSpec.describe ApiController, type: :controller do
       @user.create_api_key(access_token: @at)
 
       (1..20).each do |i|
-        instance_variable_set("@post#{i}", @user.posts.create(body: "테스트 #{i}"))
+        @user.posts.create(body: "테스트 #{i}")
       end
     end
 
@@ -269,7 +361,7 @@ RSpec.describe ApiController, type: :controller do
       @user.create_api_key(access_token: @at)
 
       (1..20).each do |i|
-        instance_variable_set("@post#{i}", @user.posts.create(body: "테스트 #{i}"))
+        @user.posts.create(body: "테스트 #{i}")
       end
     end
 

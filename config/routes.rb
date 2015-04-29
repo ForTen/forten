@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   post 'api/posts' => 'api#create_post'
   delete 'api/posts/:id' => 'api#destroy_post'
 
+  get 'api/comments/:id' => 'api#get_comments'
+  post 'api/comments' => 'api#create_comment'
+
   get 'api/timeline' => 'api#timeline'
   get 'api/timeline/read_more' => 'api#read_more'
 end

@@ -1,6 +1,7 @@
 class ApiController < ApplicationController
 
   before_action :check_access_token, except: [:regist, :login]
+  # TODO: regist, login일때 server time 안찍힘
   skip_before_filter :verify_authenticity_token
 
   
@@ -89,6 +90,54 @@ class ApiController < ApplicationController
     success
   end
 
+  ########################################################
+  #                       comment                        #
+  ########################################################
+  def get_comments
+    post_id = params[:id]
+
+    return error('글 번호가 올바르지 않습니다.') if post_id.nil?
+
+    @post = @user.posts.find_by_id(post_id)
+    @comments = @post.comments.all
+    comment_list = []
+
+    @comments.each do |c|
+      comment_list.push({ id: c.id, body: c.body })
+    end
+
+    append_comments_data(comment_list)
+    success
+  end
+
+  def create_comment
+    id = params[:id]
+    body = params[:body]
+    
+    return error('글 번호가 올바르지 않습니다.') if id.nil? || Post.find_by_id(id).nil?
+    return error('댓글의 내용이 올바르지 않습니다.') if body.nil?
+    return error('글자수가 초과 되었습니다.') unless Post.check_byte(body)
+
+    @comment = @user.comments.create(body: body, post_id: id)
+
+    success
+  end
+
+  # TODO
+  def destroy_comments
+    post = Post.find_by_id(params[:id])
+    post_owner = post.user_id
+
+    return error('게시물의 소유주가 아닙니다.') unless post_owner == @user.id
+
+    post.destroy
+
+    success
+  end
+
+  ########################################################
+  #                      timeline                        #
+  ########################################################
   def timeline
     posts = Post.all.reverse_order.limit(@timeline_limit)
     post_list = []
@@ -97,15 +146,16 @@ class ApiController < ApplicationController
       post_list.push({ id: p.id, body: p.body })
     end
 
+    @last_id = posts.last.id
     @result.merge!(posts: post_list)
 
     success
   end
 
   def read_more
-    @timeline_limit += 10
+    @last_id = Post.last.id if @last_id.nil?
 
-    posts = Post.all.reverse_order.offset(@timeline_limit - 10).limit(@timeline_limit)
+    posts = Post.all.reverse_order.where("posts.id < #{@last_id}").limit(@timeline_limit)
     
     post_list = []
 
@@ -113,6 +163,7 @@ class ApiController < ApplicationController
       post_list.push({ id: p.id, body: p.body })
     end
 
+    @last_id = posts.last.id
     @result.merge!(posts: post_list)
 
     success
