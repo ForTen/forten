@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   get 'api/comments/:id' => 'api#get_comments'
   post 'api/comments' => 'api#create_comment'
+  delete 'api/comments/:id' => 'api#destroy_comment'
 
   get 'api/timeline' => 'api#timeline'
   get 'api/timeline/read_more' => 'api#read_more'

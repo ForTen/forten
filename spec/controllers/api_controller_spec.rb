@@ -126,6 +126,39 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
+  describe '#get_post' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @at = ApiKey.generate_access_token(@user.id)
+      @user.create_api_key(access_token: @at)
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+    end
+
+    it 'without access_token' do
+      get :get_post, { id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with invalid access_token' do
+      get :get_post, { access_token: @at + @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'with all params' do
+      get :get_post, { access_token: @at, id: @post.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
+    end
+  end
+
   describe '#create_post' do
     before(:each) do
       @user = FactoryGirl.create(:wonjae)
@@ -177,39 +210,6 @@ RSpec.describe ApiController, type: :controller do
     end
   end
 
-  describe '#get_post' do
-    before(:each) do
-      @user = FactoryGirl.create(:wonjae)
-      @at = ApiKey.generate_access_token(@user.id)
-      @user.create_api_key(access_token: @at)
-      @post = @user.posts.create(body: '테스트당 헤헤') 
-    end
-
-    it 'without access_token' do
-      get :get_post, { id: @post.id }
-
-      body = JSON.parse(response.body)
-
-      expect(body['success']).to eq(false)
-    end
-
-    it 'with invalid access_token' do
-      get :get_post, { access_token: @at + @at, id: @post.id }
-
-      body = JSON.parse(response.body)
-
-      expect(body['success']).to eq(false)
-    end
-
-    it 'with all params' do
-      get :get_post, { access_token: @at, id: @post.id }
-
-      body = JSON.parse(response.body)
-
-      expect(body['success']).to eq(true)
-    end
-  end
-
   describe '#destroy_post' do
     before(:each) do
       @user = FactoryGirl.create(:wonjae)
@@ -257,7 +257,6 @@ RSpec.describe ApiController, type: :controller do
       get :get_comments, { id: @post.id }
 
       body = JSON.parse(response.body)
-      puts body
 
       expect(body['success']).to eq(false)
     end
@@ -266,7 +265,6 @@ RSpec.describe ApiController, type: :controller do
       get :get_comments, { access_token: @at + @at, id: @post.id }
 
       body = JSON.parse(response.body)
-      puts body
 
       expect(body['success']).to eq(false)
     end
@@ -275,7 +273,6 @@ RSpec.describe ApiController, type: :controller do
       get :get_comments, { access_token: @at, id: @post.id }
 
       body = JSON.parse(response.body)
-      puts body
 
       expect(body['success']).to eq(true)
     end
@@ -296,7 +293,6 @@ RSpec.describe ApiController, type: :controller do
       post :create_comment, { access_token: @at, id: @post.id, body: @short_body }
 
       body = JSON.parse(response.body)
-      puts body
 
       expect(body['success']).to eq(true)
     end
@@ -331,6 +327,40 @@ RSpec.describe ApiController, type: :controller do
       body = JSON.parse(response.body)
 
       expect(body['success']).to eq(false)
+    end
+  end
+
+  describe '#destroy_comment' do
+    before(:each) do
+      @user = FactoryGirl.create(:wonjae)
+      @user2 = FactoryGirl.create(:minsoo)
+
+      @at = ApiKey.generate_access_token(@user.id)
+      @at2 = ApiKey.generate_access_token(@user2.id)
+
+      @user.create_api_key(access_token: @at)
+      @user2.create_api_key(access_token: @at2)
+
+      @post = @user.posts.create(body: '테스트당 헤헤') 
+      
+      @comment = @user.comments.create(body: '테스트당 헤헤', post_id: @post.id) 
+      @comment2 = @user2.comments.create(body: '테스트당 헤헤', post_id: @post.id) 
+    end
+
+    it 'not owner' do
+      post :destroy_comment, { access_token: @at, id: @comment2.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
+    it 'owner' do
+      post :destroy_comment, { access_token: @at, id: @comment.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(true)
     end
   end
 

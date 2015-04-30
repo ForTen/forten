@@ -123,14 +123,13 @@ class ApiController < ApplicationController
     success
   end
 
-  # TODO
-  def destroy_comments
-    post = Post.find_by_id(params[:id])
-    post_owner = post.user_id
+  def destroy_comment
+    comment = Comment.find_by_id(params[:id])
+    comment_owner = comment.user_id
 
-    return error('게시물의 소유주가 아닙니다.') unless post_owner == @user.id
+    return error('댓글의 소유주가 아닙니다.') unless comment_owner == @user.id
 
-    post.destroy
+    comment.destroy
 
     success
   end
