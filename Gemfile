@@ -49,4 +49,9 @@ group :development, :test do
   gem 'better_errors'
   gem 'guard'
   gem 'guard-rspec'
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails'
+  gem 'capistrano3-unicorn'
 end
