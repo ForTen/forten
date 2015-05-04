@@ -16,5 +16,12 @@
 /tmp
 
 # Ignore deploy files
-/config/deploy/production.rb
-/comfig/deploy.rb
+/config/deploy/
+/config/deploy.rb
+
+# swp
+.swp
+.swo
+
+# db
+database.yml
