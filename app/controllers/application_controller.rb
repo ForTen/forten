@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def append_post_data
-    @result.merge!(post: { id: @post.id, body: @post.body, })
+    @result.merge!(post: { id: @post.id, body: @post.body, owner: @post.user_id, })
   end
 
   def append_comments_data(comment_list)

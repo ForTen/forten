@@ -96,14 +96,14 @@ class ApiController < ApplicationController
   def get_comments
     post_id = params[:id]
 
-    return error('글 번호가 올바르지 않습니다.') if post_id.nil?
+    return error('글 번호가 올바르지 않습니다.') if post_id.nil? || Post.find_by_id(post_id).nil?
 
     @post = @user.posts.find_by_id(post_id)
     @comments = @post.comments.all
     comment_list = []
 
     @comments.each do |c|
-      comment_list.push({ id: c.id, body: c.body })
+      comment_list.push({ id: c.id, body: c.body, owner: c.user_id })
     end
 
     append_comments_data(comment_list)
@@ -111,14 +111,16 @@ class ApiController < ApplicationController
   end
 
   def create_comment
-    id = params[:id]
+    post_id = params[:id]
     body = params[:body]
     
-    return error('글 번호가 올바르지 않습니다.') if id.nil? || Post.find_by_id(id).nil?
+    return error('글 번호가 올바르지 않습니다.') if post_id.nil? || Post.find_by_id(post_id).nil?
     return error('댓글의 내용이 올바르지 않습니다.') if body.nil?
     return error('글자수가 초과 되었습니다.') unless Post.check_byte(body)
 
-    @comment = @user.comments.create(body: body, post_id: id)
+    @comment = @user.comments.create(body: body, post_id: post_id)
+
+    append_comments_data({ id: @comment.id, body: @comment.body, owner: @comment.user_id })
 
     success
   end
@@ -142,7 +144,7 @@ class ApiController < ApplicationController
     post_list = []
 
     posts.each do |p|
-      post_list.push({ id: p.id, body: p.body })
+      post_list.push({ id: p.id, body: p.body, owner: p.user_id })
     end
 
     @last_id = posts.last.id
@@ -159,7 +161,7 @@ class ApiController < ApplicationController
     post_list = []
 
     posts.each do |p|
-      post_list.push({ id: p.id, body: p.body })
+      post_list.push({ id: p.id, body: p.body, owner: p.user_id })
     end
 
     @last_id = posts.last.id
