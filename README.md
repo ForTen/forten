@@ -10,6 +10,7 @@ POST /api/regist
 
 - email
 - password
+- password_repeat
 - username
 
 **Return**
