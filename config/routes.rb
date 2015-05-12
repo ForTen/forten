@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   post 'api/comments' => 'api#create_comment'
   delete 'api/comments/:id' => 'api#destroy_comment'
 
+  post 'api/likes' => 'api#create_like'
+  delete 'api/likes/:id' => 'api#destroy_like'
+
   get 'api/timeline' => 'api#timeline'
   get 'api/timeline/read_more' => 'api#read_more'
 end
