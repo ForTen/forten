@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
   end
 
   def append_like_data
-    @result.merge!(comment: { id: @like.id, owner: @like.user_id })
+    @result.merge!(like: { id: @like.id, owner: @like.user_id })
   end
 
   def error(message)
