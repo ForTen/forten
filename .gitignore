@@ -22,6 +22,7 @@
 # swp
 .swp
 .swo
+.*
 
 # db
 database.yml

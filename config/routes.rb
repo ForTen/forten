@@ -1,19 +1,27 @@
 Rails.application.routes.draw do
+  Rails.application.routes.draw do
+    mount ApiTaster::Engine => "/api_taster" if Rails.env.development?
+  end
+
   # API
-  post 'api/regist' => 'api#regist'
-  post 'api/login' => 'api#login'
+  post 'api/regist' => 'regist#regist'
+  post 'api/login' => 'login#login'
 
-  get 'api/posts/:id' => 'api#get_post'
-  post 'api/posts' => 'api#create_post'
-  delete 'api/posts/:id' => 'api#destroy_post'
+  # POST
+  get 'api/posts/:id' => 'post#show'
+  post 'api/posts' => 'post#create'
+  delete 'api/posts/:id' => 'post#destroy'
 
-  get 'api/comments/:id' => 'api#get_comments'
-  post 'api/comments' => 'api#create_comment'
-  delete 'api/comments/:id' => 'api#destroy_comment'
+  # COMMENT
+  get 'api/comments/:id' => 'comment#show'
+  post 'api/comments' => 'comment#create'
+  delete 'api/comments/:id' => 'comment#destroy'
 
-  post 'api/likes' => 'api#create_like'
-  delete 'api/likes/:id' => 'api#destroy_like'
+  # LIKE
+  post 'api/likes' => 'like#create'
+  delete 'api/likes/:id' => 'like#destroy'
 
-  get 'api/timeline' => 'api#timeline'
-  get 'api/timeline/read_more' => 'api#read_more'
+  # TIMELINE
+  get 'api/timeline' => 'timeline#timeline'
+  get 'api/timeline/read_more' => 'timeline#read_more'
 end

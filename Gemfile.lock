@@ -30,6 +30,12 @@ GEM
     airbrake (4.1.0)
       builder
       multi_json
+    api_taster (0.8.4)
+      jquery-rails
+      rails (~> 4.1.0)
+      redcarpet
+      remotipart (~> 1.0)
+      sass-rails (~> 4.0.3)
     arel (5.0.1.20140414130214)
     aws-sdk (2.0.38)
       aws-sdk-resources (= 2.0.38)
@@ -168,6 +174,8 @@ GEM
       ffi (>= 0.5.0)
     rdoc (4.2.0)
       json (~> 1.4)
+    redcarpet (3.2.3)
+    remotipart (1.2.1)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
       rspec-expectations (~> 3.2.0)
@@ -241,6 +249,7 @@ PLATFORMS
 
 DEPENDENCIES
   airbrake
+  api_taster
   aws-sdk
   better_errors
   capistrano

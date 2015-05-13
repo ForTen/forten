@@ -54,4 +54,5 @@ group :development, :test do
   gem 'capistrano-rvm'
   gem 'capistrano-rails'
   gem 'capistrano3-unicorn'
+  gem 'api_taster'
 end
