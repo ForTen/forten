@@ -32,6 +32,16 @@ RSpec.describe TimelineController, type: :controller do
       end
     end
 
+    it 'no more posts' do
+      (@user.posts.length / 10 + 1).times do
+        post :read_more, { access_token: @at }
+      end
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
+
     it 'get correct posts' do
       post :read_more, { access_token: @at }
 

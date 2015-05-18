@@ -9,10 +9,10 @@ class ApplicationController < ActionController::Base
   end
 
   def check_access_token
-    at = params[:access_token]
-    return error('토큰이 올바르지 않습니다.') if ApiKey.find_by_access_token(at).nil?
+    @at = params[:access_token]
+    return error('토큰이 올바르지 않습니다.') if ApiKey.find_by_access_token(@at).nil?
 
-    @user = User.by_access_token(at).first
+    @user = User.by_access_token(@at).first
     return error('사용자 정보가 없습니다.') if @user.nil?
   end
   
