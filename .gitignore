@@ -19,6 +19,12 @@
 /config/deploy/
 /config/deploy.rb
 
+# Ignore aws key file
+/config/aws.yml
+
+# Ignore public folder
+/public
+
 # swp
 .swp
 .swo

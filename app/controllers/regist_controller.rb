@@ -13,6 +13,12 @@ class RegistController < ApplicationController
       return error('회원 가입에 실패하였습니다.')
     end
 
+    if params.key?(:picture)
+      photo = params.permit(:picture)
+      pic = @user.user_pictures.new(photo)
+      pic.save
+    end
+
     at = ApiKey.generate_access_token(@user.id)
     @user.create_api_key(access_token: at)
 

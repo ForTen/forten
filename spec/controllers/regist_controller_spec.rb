@@ -5,6 +5,7 @@ RSpec.describe RegistController, type: :controller do
     @email = 'test@test.com'
     @password = 'asdfaa'
     @username = 'akkiros'
+    @photo = fixture_file_upload('photos/test.png', 'image/png')
   end
   
   describe '#regist' do
@@ -56,7 +57,7 @@ RSpec.describe RegistController, type: :controller do
 
     context 'success' do
       it 'have all unique params' do
-        post :regist, { email: @email, password: @password, password_repeat: @password, username: @username }
+        post :regist, { email: @email, password: @password, password_repeat: @password, username: @username, picture: @photo }
 
         body = JSON.parse(response.body)
 

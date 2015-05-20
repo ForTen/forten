@@ -34,4 +34,15 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.paperclip_defaults = {
+    :storage => :s3,
+    :s3_credentials => "#{Rails.root}/config/aws.yml",
+    :s3_host_alias => 'dhzjyf8y9t7pq.cloudfront.net',
+    :s3_host_name => "s3-ap-northeast-1.amazonaws.com",
+    :s3_protocol => "",
+    :url => ":s3_alias_url",
+    :bucket => 'forten',
+    :path => ":attachment/:id/:style/:filename"
+  }
 end

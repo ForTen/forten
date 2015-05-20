@@ -28,6 +28,7 @@ gem 'unicorn'
 gem 'aws-sdk'
 gem 'foreigner'
 gem 'airbrake'
+gem 'paperclip'
 
 
 # Use ActiveModel has_secure_password

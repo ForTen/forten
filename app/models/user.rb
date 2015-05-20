@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :user_pictures, dependent: :destroy
   has_one :api_key, dependent: :destroy
 
   scope :by_access_token, -> (at) { joins(:api_key).where("api_keys.access_token = #{at}") }
