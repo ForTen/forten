@@ -5,7 +5,7 @@ class Post < ActiveRecord::Base
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
 
-  TIMELINE_LIMIT = 10 
+  TIMELINE_LIMIT = 10
 
   def self.check_byte(str)
     # return string byte without blank

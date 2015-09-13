@@ -1,13 +1,9 @@
 class PostController < ApplicationController
+  protect_from_forgery with: :null_session
   before_action :check_access_token
+  before_action :check_post_exists, except: [:create]
 
   def show
-    post_id = params[:id]
-
-    return error('인자가 올바르지 않습니다.') if post_id.nil?
-
-    @post = @user.posts.find_by_id(post_id)
-
     append_post_data
     success
   end
@@ -25,13 +21,19 @@ class PostController < ApplicationController
   end
 
   def destroy
-    post = Post.find_by_id(params[:id])
-    post_owner = post.user_id
+    post_owner = @post.user_id
 
     return error('게시물의 소유주가 아닙니다.') unless post_owner == @user.id
 
-    post.destroy
+    @post.destroy
 
     success
+  end
+
+  private
+
+  def check_post_exists
+    @post = Post.find_by_id(params[:id])
+    return error('해당글이 존재하지 않습니다.') if @post.nil?
   end
 end

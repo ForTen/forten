@@ -1,4 +1,6 @@
 class RegistController < ApplicationController
+  protect_from_forgery with: :null_session
+
   def regist
     email = params[:email] unless params[:email].nil?
     password = Digest::SHA1.hexdigest(params[:password]) unless params[:password].nil?

@@ -43,7 +43,7 @@ RSpec.describe TimelineController, type: :controller do
     end
 
     it 'get correct posts' do
-      post :read_more, { access_token: @at }
+      post :read_more, { access_token: @at, page: 1 }
 
       body = JSON.parse(response.body)
 
