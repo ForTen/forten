@@ -32,6 +32,14 @@ RSpec.describe PostController, type: :controller do
 
       expect(body['success']).to eq(true)
     end
+
+    it 'not exists post' do
+      get :show, { access_token: @at, id: @post.id + 1000 }
+
+      body = JSON.parse(response.body)
+
+      expect(body['success']).to eq(false)
+    end
   end
 
   describe '#create' do
