@@ -1,4 +1,6 @@
 class LoginController < ApplicationController
+  protect_from_forgery with: :null_session
+
   def login
     email = params[:email] unless params[:email].nil?
     password = params[:password] unless params[:password].nil?
