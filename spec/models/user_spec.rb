@@ -12,7 +12,11 @@ RSpec.describe User, type: :model do
         expect(FactoryGirl.build(:minsoo, username: 'minsoo1003')).to be_valid
       end
 
-      it 'username is maximum 20 words' do
+      it 'username is minimum 4 words' do
+        expect(FactoryGirl.build(:minsoo, username: 'minsoo1003')).to be_valid
+      end
+
+      it 'username is maximum 12 words' do
         expect(FactoryGirl.build(:minsoo, username: 'minsoo1003')).to be_valid
       end
 
@@ -30,8 +34,12 @@ RSpec.describe User, type: :model do
         expect(FactoryGirl.build(:minsoo, username: '')).not_to be_valid
       end
 
-      it 'username is maximum 20 words' do
-        expect(FactoryGirl.build(:minsoo, username: 'asdfasdfasdfasdfasdfa')).not_to be_valid
+      it 'username is minimum 4 words' do
+        expect(FactoryGirl.build(:minsoo, username: 'asd')).not_to be_valid
+      end
+
+      it 'username is maximum 12 words' do
+        expect(FactoryGirl.build(:minsoo, username: 'asdfasdfasdfasdf')).not_to be_valid
       end
 
       it 'email is presence' do
