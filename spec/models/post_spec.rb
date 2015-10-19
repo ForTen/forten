@@ -19,11 +19,11 @@ RSpec.describe Post, type: :model do
     end
 
     context 'fail' do
-      it 'body is presence' do
+      it 'body is not presence' do
         expect(FactoryGirl.build(:sad_post, body: '')).not_to be_valid
       end
 
-      it 'user_id is presence' do
+      it 'user_id is not presence' do
         expect(FactoryGirl.build(:sad_post, user_id: '')).not_to be_valid
       end
     end
@@ -42,6 +42,11 @@ RSpec.describe Post, type: :model do
 
     it 'should have many likes' do
       t = Post.reflect_on_association(:likes)
+      expect(t.macro).to eq(:has_many)
+    end
+
+    it 'should have many feeds' do
+      t = Post.reflect_on_association(:feeds)
       expect(t.macro).to eq(:has_many)
     end
   end
@@ -77,6 +82,21 @@ RSpec.describe Post, type: :model do
       post.destroy
 
       expect(Like.find_by_id(like.id)).to eq(nil)
+    end
+  end
+
+  context '#after_save' do
+    context 'success' do
+      it 'feed must made after create post' do
+        post = FactoryGirl.create(:sad_post, body: 'good', user_id: @user.id)
+
+        expect(post).to be_valid
+        expect(Feed.find_by(item_type: post.class.name, item_id: post.id)).to be_valid
+      end
+    end
+
+    context 'fail' do
+      #TODO
     end
   end
 end

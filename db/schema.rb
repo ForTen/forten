@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519101029) do
+ActiveRecord::Schema.define(version: 20151016140107) do
 
   create_table "api_keys", force: true do |t|
     t.string   "access_token"
@@ -32,6 +32,13 @@ ActiveRecord::Schema.define(version: 20150519101029) do
 
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "feeds", force: true do |t|
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "likes", force: true do |t|
     t.integer  "user_id"

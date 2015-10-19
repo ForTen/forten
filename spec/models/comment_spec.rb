@@ -52,6 +52,11 @@ RSpec.describe Comment, type: :model do
       t = Comment.reflect_on_association(:likes)
       expect(t.macro).to eq(:has_many)
     end
+
+    it 'should have many feeds' do
+      t = Post.reflect_on_association(:feeds)
+      expect(t.macro).to eq(:has_many)
+    end
   end
 
   context '#destroy' do

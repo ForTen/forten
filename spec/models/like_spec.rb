@@ -37,5 +37,10 @@ RSpec.describe Like, type: :model do
       t = Like.reflect_on_association(:comment)
       expect(t.macro).to eq(:belongs_to)
     end
+
+    it 'should have many feeds' do
+      t = Post.reflect_on_association(:feeds)
+      expect(t.macro).to eq(:has_many)
+    end
   end
 end
